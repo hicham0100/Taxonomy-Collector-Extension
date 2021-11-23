@@ -1,0 +1,46 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+
+    "manifest_version": 2,
+    "name":"Taxonomy Collector",
+    "version":"0.8.4.19",
+    "icons":{
+        "16":"icon.png",
+        "32":"icon.png",
+        "48":"icon.png",
+        "128":"icon.png"
+    },
+
+    "browser_action": {
+      "default_icon": {
+        "16":"icon.png",
+        "32":"icon.png",
+        "48":"icon.png",
+        "128":"icon.png"
+      },
+	  "default_popup": "index.html?popup=true",
+      "default_title": "Taxonomy Collector"
+    },
+
+    "background": {
+      "scripts": ["js/background.js"],
+	  "persistent": true
+    },
+	  "content_scripts": [
+		{
+		  "matches": ["*://*/*"],
+		  "js": ["js/jquery-3.3.1.min.js","js/bootstrap.min.js","js/jquery-ui.min.js","js/jquery.mark.min.js", "js/notify.min.js", "js/storage.js","js/contentscript.js"],
+		  "css": ["css/jquery-ui.min.css","css/style.css"], 
+		  "all_frames": true
+		}
+	  ],
+	"web_accessible_resources": [
+        "images/*.png"
+    ],
+
+    "default_locale":"en",
+    "permissions":["contextMenus", "tabs", "storage", "activeTab", "<all_urls>", "webRequest", "webRequestBlocking", "downloads", "unlimitedStorage"],
+    "content_security_policy": "default-src 'self'; connect-src *; script-src 'unsafe-eval' 'self'; style-src * blob: data: filesystem: 'unsafe-inline'; img-src * 'self' data: https:; frame-src * blob: data: filesystem:; font-src * blob: data: filesystem:; media-src *;",
+    "offline_enabled":true,
+	"options_page": "index.html"
+}

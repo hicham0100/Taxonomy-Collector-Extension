@@ -1,0 +1,539 @@
+<html lang="en">
+<head>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="css/bootstrap.min.css">
+
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="css/bootstrap-theme.min.css" >
+<link rel="stylesheet" href="css/jquery.contextMenu.min.css" >
+<link rel="stylesheet" href="css/jquery-ui.min.css" >
+<!--link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"-->
+
+<!-- Latest compiled and minified JavaScript -->
+
+<script src="js/bootstrap.min.js"></script>
+<script src="js/notify.min.js"></script>
+<script src="js/jquery.contextMenu.min.js"></script>
+<script src="js/jquery.ui.position.js"></script>
+
+<script src="js/utils.js"></script>
+<script src="js/pouchdb.min.js"></script>
+<script src="js/storage.pouchdb.js"></script>
+<script src="js/user.js"></script>
+<script src="js/annotationTasks.js"></script>
+
+<script src="js/bubble.js"></script>
+<script src="js/main.js"></script>
+
+<style>
+a{cursor: pointer;}
+   ul.tree, ul.tree ul {
+    list-style: none;
+     margin: 0;
+	 margin-left:15px;
+     padding: 0;
+   }
+
+   ul.tree ul {
+     margin-left: 30px;
+   }
+   ul.tree li {
+     margin: 0;
+     padding: 0 7px;
+     line-height: 20px;
+     /*color: #369;*/
+     font-weight: bold;
+     border-left:1px solid rgb(100,100,100);
+
+   }
+   ul.tree li:last-child {
+       border-left:none;
+   }
+   ul.tree li:before {
+      position:relative;
+      top:-0.3em;
+      height:1em;
+      width:12px;
+      color:white;
+      border-bottom:1px solid rgb(100,100,100);
+      content:"";
+      display:inline-block;
+      left:-7px;
+   }
+   ul.tree li:last-child:before {
+      border-left:1px solid rgb(100,100,100);
+   }
+span.axiomProperty, span.axiomObject{
+	display:inline-block;
+	    display: inline-grid;
+	min-width:200px;
+}
+
+
+
+
+.form{
+	display: block;
+    width: 95%;
+    padding: .375rem .75rem;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	margin-bottom: 1rem;
+}
+
+ul.nav-tabs.mainMenu{
+	background-color: #3DCD58;
+}
+
+.nav-tabs.mainMenu.nav-justified>li>a, .nav-tabs.mainMenu.nav-justified>li>a:hover, .nav-tabs.mainMenu.nav-justified>li>a:focus{
+	border:0px;
+	background-color: transparent;
+	color:white;
+	border-radius: 0px; 	
+	font-size:18px
+}
+.nav-tabs.mainMenu.nav-justified>li>a.active, .nav-tabs.mainMenu.nav-justified>li>a.active:hover, .nav-tabs.mainMenu.nav-justified>li>a.active:focus{
+	border:0px;
+	background-color: #f0f0f0;
+	color:#3DCD58;
+}
+
+.nav-tabs.mainMenu.nav-justified>li>a:hover{
+	background-color: white;
+	color: #3DCD58;
+	border:0px;
+}
+
+td, th {
+    padding: 5;
+}
+
+#data_crowler_button_{
+	background-image: url('data:image/png;base64,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');
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	background-color:gray;	
+    background-color: rgb(245, 245, 245);
+    box-sizing: content-box;
+    cursor: pointer;
+    height: 19px;
+    width: 19px;
+    z-index: 12147483648;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(220, 220, 220);
+    border-image: initial;
+    border-radius: 5px;
+    padding: 3px;	
+}
+
+
+
+
+.annotation-close {
+	display:none;
+    position: absolute;
+    left: -8px;
+    top: -8px;
+    width: 16px;
+    height: 16px;
+    z-index: 999;
+    border: none;
+    background: url(data:image/png;base64,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) no-repeat border-box;
+    animation-duration: 275ms;
+    animation-timing-function: ease-out;
+    box-shadow: none;
+    animation-name: d1a67053-88c7-4a2a-9530-8d9f26570c15;
+}
+
+.annotation-close:hover, .annotation-close:focus {
+    background-image: url(data:image/png;base64,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);
+}
+ .ui-icon {
+	
+  -ms-transform: scale(1.5); /* IE 9 */
+  -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
+  transform: scale(1.5);
+
+ }
+
+.truncate {
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#annotated_text mark{
+	white-space: nowrap;
+}
+
+mark{	
+	padding: 0px;
+	position:relative;
+    box-shadow: rgb(243 212 57) 0px 0px 0.35em;
+    background-color: rgba(243, 212, 57, 0.8) !important;
+}
+mark.odd{	
+	padding: 0px;
+	position:relative;
+    box-shadow: rgb(192 255 0) 0px 0px 0.35em;
+    background-color: rgba(192, 212, 57, 0.8) !important;
+}
+ 
+mark.taxonomy_mark{
+    box-shadow: rgb(255 255 255) 0px 0px 0.35em !important;
+    background-color: transparent !important;
+}
+
+
+.cleaned {
+	background-color : cyan;
+}
+
+.validated {
+	background-color : cyan;
+}
+
+</style>
+
+</head>
+
+<body style="padding:10px; min-width: 780px;min-height:600px">
+
+<ul class="nav nav-tabs mainMenu nav-justified " id="ul1" style="margin-bottom:10px;background">
+	<li class="nav-item"><a data-toggle="pill" data-toggle="tab" role="tab" class="nav-link active" href="#annotation_div">&nbsp; Text Annotation</a></li>
+	<li class="nav-item"><a data-toggle="pill" data-toggle="tab" role="tab" class="nav-link" href="#taxonomy_div" >&nbsp; Collected taxonomy </a></li>
+	<li class="nav-item" id="tab_text"><a data-toggle="pill" data-toggle="tab" role="tab" class="nav-link" href="#text_div">&nbsp; Collected texts</a></li>
+	
+	<li class="nav-item" id="tab_config"><a data-toggle="pill" data-toggle="tab" role="tab" class="nav-link" href="#config_div">&nbsp; Configuration</a></li>
+</ul>
+
+
+<div id="tabs_" class="tab-content" style="position:relative;display:block">
+
+
+<div id="taxonomy_div"  class="tab-pane" role="tabpanel" >
+	<table style="width:100%">
+		<tr style="width:100%">
+			<td style="vertical-align:top; width:35%">		
+				<div class="panel panel-default" id="">
+					<div class="panel-heading"> Taxonomy  
+						(<span  id="entry_count"></span>)
+						<span style="float:right;margin-top:-5px;">							
+							<button type="button" class="btn btn-info" id="sort_btn" style="padding:6px 2px" ><span class="ui-icon ui-icon-white ui-icon-arrowthick-1-s"></span></button>
+							<button type="button" class="btn btn-info" id="preview_btn" style="padding:6px 2px" ><span class="ui-icon ui-icon-white  ui-icon-extlink"></span></button>
+							<button type="button" class="btn btn-info" id="time_btn" style="padding:6px 2px; display:none" ><span class="ui-icon ui-icon-white ui-icon-clock"></span></button>
+						</span>
+					</div>
+					<div class="panel-body" style="padding:0px;margin:0px;overflow-y: auto;height:80vh;" >
+						<div class="list-group" id="taxonomy_list" style="margin-bottom: 0px;">
+							<!--<a class="list-group-item" class="success" href="#" onclick="show_details('keyword')"> </a>-->
+						</div>
+						
+					</div>	
+				</div>
+			</td>
+			<td style="vertical-align:top;width:65%; padding-left:5px;">
+				<div class="panel panel-default" >
+					<div class="panel-heading"> &nbsp;
+						<span style="float:left;margin-top:-8px;">
+							<button type="button" class="btn btn-primary" id="new_btn" >New</button>	
+							<button type="button" class="btn btn-success" id="save_btn" >Save</button>
+							<button type="button" class="btn btn-warning" id="delete_btn">Delete</button>							
+						</span>
+						<span style="float:right;margin-top:-8px;">
+							<button type="button" class="btn btn-danger" id="clear_btn">Clear all data</button>							
+						</span>
+					</div>
+					<div class="panel-body" id="taxonomy_details" style = "display:none">
+						<form role="form">
+							<table style="width:100%">
+								<tr style="width:100%">
+									<td style="width:60%;vertical-align:bottom;">
+										<div class="form-group">
+											<label>Entry type</label>
+											<select type="text" id="type" class="form-control" style="width:240px;">
+												<option value="0" selected="">&nbsp;</option>
+												<option value="1">Machine component</option>	
+												<option value="2"> ---&gt;  Structural element</option>
+												<option value="3"> ---&gt;  Mechanical element</option>
+												<option value="4"> ---&gt;  Control element</option>
+												<option value="9">Mechanical Equipment</option>
+												<option value="5">Material</option>
+												<option value="6">Manufacturing process</option>
+												<option value="7">Failure / anomaly</option>
+												<option value="8">Maintenance process</option>
+											</select>
+										</div>
+									</td>
+									<td style="width:40%;text-align:right">	
+										<img id="image" src="" style="max-width: 150px;max-height: 150px;">
+									</td>
+								</tr>
+							</table>
+							
+							<div class="form-group">
+							<label>Name</label>
+							<input type="text" id="name" class="form-control" placeholder="Entry name">
+							</div>
+							<div class="form-group">
+							
+							<label>Synonyms</label>
+							<input type="text" id="synonyms" class="form-control" placeholder="Synonyms separated by comma">
+							</div>
+							<div class="form-group">
+							<label>Description</label>
+							<div class="form" id="html_description" contenteditable="true"  style="max-width: 100vh;width:100%;">&nbsp;</div>
+							</div>
+							<div class="form-group">
+							<label>Category</label>
+							<input type="text" id="category" class="form-control" placeholder="Class of the entry">
+							</div>
+							<div class="form-group">
+							<label>Is part of</label>
+							<input type="text" id="ispart_of" class="form-control" placeholder="List of items (separated by comma) of which this item is part...">
+							</div>
+							<div class="form-group">
+							<label>Wikipedia URL</label>
+							<input type="text" class="form-control" id="url" placeholder="Item's Wikipedia URL">
+							</div>
+							<div class="form-group">
+							<label>Image's URL</label>
+							<input type="text" class="form-control" id="image_url" placeholder="Item's Wikipedia URL"><input type="hidden" id="referer_url" value=""><input type="hidden" id="description" value="">
+							</div>
+						</form>
+					</div>	
+				</div>
+		
+			</td>
+		</tr>
+	</table>
+</div> 
+
+
+<div id="text_div"  class="tab-pane" role="tabpanel" >
+	<table style="width:100%">
+		<tr style="width:100%">
+			<td style="vertical-align:top; width:30%">		
+				<div class="panel panel-default" id="">
+					<div class="panel-heading"> Text corpus		
+						(<span  id="entry_count"></span>)				
+					</div>
+					<div class="panel-body" style="padding:0px;margin:0px;overflow-y: auto;height:80vh;" >
+						<div class="list-group" id="text_list" style="margin-bottom: 0px;">
+						</div>
+						
+					</div>	
+				</div>
+			</td>
+			<td style="vertical-align:top;width:70%; padding-left:5px;">
+				<div class="panel panel-default" >
+					<div class="panel-heading"> &nbsp;
+						<span style="float:left;margin-top:-8px;">
+							<button type="button" class="btn btn-primary" id="new_btn" >New</button>	
+							<button type="button" class="btn btn-success" id="save_btn" >Save</button>
+							<button type="button" class="btn btn-warning" id="delete_btn">Delete</button>							
+							<button type="button" class="btn btn-info" id="validate_btn">Validate</button>
+						</span>
+						<span style="float:right;margin-top:-8px;">
+							<button type="button" class="btn btn-success" id="sendToAnn_btn">Send all sections for annoation</button>	
+							<button type="button" class="btn btn-danger" id="clear_btn">Clear all data</button>							
+						</span>
+					</div>
+					<div class="panel-body" id="text_details" style = "display:none">
+						<form role="form">
+							<div class="form-group">
+								<label>Title</label>
+								<input type="text" id="title" class="form-control">
+							</div>
+							<div class="form-group">
+								<label>URL</label>
+								<input type="text" id="url" class="form-control">
+							</div>
+							
+							<div class="form-group">
+								<label>Text</label><span id="text_validated" style="margin-left:20px" class="badge btn-success">Validated</span>
+								<div class="form" id="html_text" contenteditable="true" style="max-width: 100vw;width:100%; min-height:300px">&nbsp;</div>
+							</div>							
+						</form>
+					</div>	
+				</div>
+		
+			</td>
+		</tr>
+	</table>
+</div> 
+
+
+
+<div id="annotation_div"  class="tab-pane active" role="tabpanel" >
+	<table style="width:100%">
+		<tr style="width:100%">
+			<td style="vertical-align:top; width:30%">		
+				<div class="panel panel-default" id="">
+					<div class="panel-heading"> Text annotation	
+						(<span  id="text_count"></span>)					
+					</div>
+					<div class="panel-body" style="padding:0px;margin:0px;overflow-y: auto;height:80vh;" >
+						<div class="list-group" id="text_list" style="margin-bottom: 0px;">
+						</div>
+						
+					</div>	
+				</div>
+			</td>
+			<td style="vertical-align:top;width:70%; padding-left:5px;">
+				<div class="panel panel-default" >
+					<div class="panel-heading"> &nbsp;
+						<span style="float:left;margin-top:-8px;">
+							<button type="button" class="btn btn-primary" id="new_btn" >New</button>	
+							<button type="button" class="btn btn-success" id="save_btn" >Save</button>
+							<button type="button" class="btn btn-warning" id="delete_btn">Delete</button>							
+							
+						</span>		
+						<span style="float:right;margin-top:-8px;">
+							<button type="button" class="btn btn-danger" id="clear_btn">Clear all data</button>							
+						</span>						
+					</div>
+					<div class="panel-body" id="text_details" style = "display:none">
+						<form role="form">
+							
+							
+							<div class="form-group">
+								
+								<label style="margin-bottom:20px" >Text</label><span id="text_validated" style="margin-left:20px" class="badge btn-success">Validated</span>
+								<span style="float:right;">
+									<button type="button" class="btn btn-info" id="validate_btn">Validate</button>
+									<button id="auto_btn" style="color:black;" class="badge btn-default">Automatic Annotation</button>
+								</span>
+								<div class="form" id="annotated_text" contenteditable="true" style="line-height: 2;font-size:20;max-width: 100vw;width:100%; min-height:300px">&nbsp;</div>
+								<a id="showhtmltext">Show/Hide HTML version</a>
+								<div class="form" id="html_text"style="display:none;">&nbsp;</div>
+								<div id="annotation_dialog" class="panel panel-default" style="display:nonde">
+									<div class="panel-heading" style="display:none"> Accepted annoations </div>
+									<div class="panel-body" style="padding:0px;margin:0px;display:none;" >
+										<table>
+											<tr>
+												<th width="20%">Origin</th> <th width="20%">Text</th> <th width="20%">Annotation</th><th width="20%">Type</th> <th width="15%">Pos</th><th>&nbsp;</th> 
+											</tr>
+											<tbody id="accepted">
+											</tbody>
+										</table>
+									</div>
+									
+									<div class="panel-heading"> Ignored annoations </div>
+									<div class="panel-body" style="padding:0px;margin:0px;" >
+										<table >
+											<tr>
+												<th width="20%">Origin</th> <th width="20%">Text</th> <th width="20%">Annotation</th> <th width="20%">Type</th><th width="15%">Pos</th><th>&nbsp;</th> 
+											</tr>
+											<tbody id="ignored">
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>							
+						</form>
+					</div>	
+				</div>
+		
+			</td>
+		</tr>
+	</table>
+</div> 
+
+
+
+<div id="config_div"  class="tab-pane" role="tabpanel" style="padding: 0 20%;">
+				
+	<div class="panel panel-default" >
+		<div class="panel-heading"> Configuration
+			<span style="float:right;margin-top:-8px;">	
+				<button type="button" class="btn btn-success" id="save_btn" >Save</button>						
+				<button type="button" class="btn btn-primary" id="export_btn" >Export data</button>
+				<button type="button" class="btn btn-warning" id="load_btn" >Load data</button>
+				<input type="file" id="data_load" style="display:none">
+			</span>
+		</div>
+		<div class="panel-body" id="">
+			<form role="form">
+				<div class="form-group">
+					<h4>Username </h4>
+					<input type="text" id="user_name" class="form-control">
+				</div>
+				
+				<br><hr><br>
+				<div class="form-group">
+					<h4>Text annotation tags </h4> 
+					
+					<table id="tags_table">
+						<tr>
+							<td><label>Tag </label></th>
+							<td><label>custom color </label></th>
+						</tr>
+						<!--<tr>
+							<td>
+								 <input type="text" name="tag" class="form-control">
+							</td>
+							<td>
+								 <input type="color" name="color" class="form-control" value="#ff0000">
+							</td>
+							<td>
+								<button type="button" class="btn btn-danger" name="remove_btn" ><span class="ui-icon ui-icon-white ui-icon-trash"></span></button>
+							</td>
+						</tr>-->
+					</table>
+					<button type="button" class="btn btn-success" id="new_tag" ><span class="ui-icon ui-icon-white ui-icon-plus"></span></button>
+				</div>		
+				<br><hr><br>
+				<div class="form-group" style="display:none">
+					<h4>Synchronization with the server</h4>
+					<button type="button" class="btn btn-success" id="sync_taxonomy" >Synchronize taxonomy with the server</button>
+					<button type="button" class="btn btn-primary" id="sync_text" >Synchronize texts with the server</button>
+					
+					
+				</div>
+			</form>
+		</div>	
+	</div>
+	
+</div>
+
+</div>
+
+
+
+<div id="User-form" style="position:absolute; top:0; left:0; width:100%; height:100%;background-color:white; padding:10% 30%;display:none;">
+<h2>Hi, thank you for being volounteer for the text annotation task</h2><br>
+<h3>Please enter your details</h3>
+<p class="validateTips">* All form fields are required.</p>
+  <form role="form">
+		<div class="form-group">
+			<label>User name *</label>
+			<input type="text" id="name" class="form-control" value="Hicham">
+		</div>
+		<div class="form-group">
+			<label>Email *</label>
+			<input type="text" id="email" class="form-control" value = "Hicham@se.com">
+		</div>
+		<div class="form-group">
+			
+			<button id="user_validate" class="btn btn-success">OK</button>
+		</div>
+  </form>
+</div>
+
+</body>
+
+
+</html>
